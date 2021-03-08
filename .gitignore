@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+client/node_modules/
+
+# Ignore files related to API keys
+.env
+
+#Private Key
+id_rsa_priv.pem
+
