@@ -82,13 +82,13 @@ require('./config/passport')(passport);
 const users = require('./routes/api/users');
 //**Created
 // const session = require('./routes/api/session');
-const rating = require('./routes/api/rating');
-const initialpost = require('./routes/api/initialpost');
+const friends = require('./routes/api/friends');
+const predictions = require('./routes/api/predictions');
 
 app.use('/api/users',users);
 // app.use('/api/session', session);
-// app.use('/api/rating', rating);
-app.use('/api/initialpost', initialpost);
+app.use('/api/friends', friends);
+app.use('/api/predictions', predictions);
 //** 
 
 //**Will most likely have to change this so that incorrect request get errors

@@ -1,0 +1,540 @@
+swagger: '2.0'
+info:
+  description: This is Fight Clubs api
+  version: 1.0.0
+  title: Boxing Pickem Api
+  # put the contact info for your development or API team
+  contact:
+    email: bdelancey98@gmail.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: predictions
+  description: Auth only calls for users to get prediction data
+- name: users
+  description: login, register, profile
+- name: leaderboards
+  description: records all data for users and scores users globably, countrily, and localy
+- name: friends
+  description: list of friends created by user, also creates a friends list leaderboard
+- name: localleagues
+  description: list of friends created by user, also creates a friends list leaderboard
+  
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+
+paths:
+  /predictions/{fightID}/fights:
+    get:
+      tags:
+      - predictions
+      summary: finds all predictions or specific prediction
+      operationId: findpredictionsbyfight
+      description: |
+        By passing in the appropriate options, you can search for
+        available perdictions either returning all perdicitions of a given user or
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: fightID
+        description: pass a userID to get all predictions for a specific user
+        required: true
+        type: string
+      - in: query
+        name: userID
+        description: pass a userID to get all predictions for a specific user
+        required: false
+        type: string
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  /predictions/{userID}/users:
+    get:
+      tags:
+      - predictions
+      summary: finds all predictions or specific prediction
+      operationId: findpredictionsbyuser
+      description: |
+        By passing in the appropriate options, you can search for
+        available perdictions either returning all perdicitions of a given user or
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: pass a userID to get all predictions for a specific user
+        required: true
+        type: string
+      - in: query
+        name: fightID
+        description: pass a fightID to get all predictions for a specific user
+        required: false
+        type: string
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  /predictions:
+    post:
+      tags:
+      - predictions
+      summary: creates perdictions
+      operationId: createperdictions
+      description: |
+        By passing in the appropriate options, you can create a prediction
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: prediction
+        description: pass the prediction object to create a prediction
+        required: true
+        schema:
+          $ref: '#/definitions/Predictions'
+      responses:
+        200:
+            description: search results matching criteria
+            # schema:
+            #   type: array
+            #   items:
+            #     $ref: '#/definitions/InventoryItem'
+        400:
+            description: bad input parameter
+  /predictions/{userID}/{predictionID}:
+    delete:
+      tags:
+      - predictions
+      summary: removes perdictions
+      operationId: removesprediction
+      description: |
+        By passing in the appropriate options, you can delete a single prediction or all of a users predictions
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: pass an in userID to specify whose prediction you want deleted, casscading 
+        required: true
+        type: string
+      - in: path
+        name: predictionID
+        required: true
+        description: prediction id
+        type: string
+      responses:
+        200:
+          description: search results matching criteria
+          # schema:
+          #   type: array
+          #   items:
+          #     $ref: '#/definitions/InventoryItem'
+        400:
+          description: bad input parameter
+    put:
+      tags:
+      - predictions
+      summary: edit perdictions
+      operationId: editsperdictions
+      description: |
+        By passing in the appropriate options, you can edit a prediction
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: user id
+        required: true
+        type: string
+      - in: path
+        name: predictionID
+        required: true
+        description: prediction id
+        type: string
+      - in: body
+        name: prediction
+        required: true
+        description: the new prediciton content
+        schema:
+          $ref: '#/definitions/Predictions'
+        
+      responses:
+        200:
+          description: search results matching criteria
+          # schema:
+          #   type: array
+          #   items:
+          #     $ref: '#/definitions/InventoryItem'
+        400:
+          description: bad input parameter
+          
+  /friends/{userID}/friendlist:
+    get:
+      tags:
+      - friends
+      summary: get the list of friends for a user
+      operationId: findfriendlist
+      description: |
+        By passing in the appropriate options, you can find all users that are the friends of the specific user, *must only work for the specific user requesting
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: pass a userID the friend list for that user
+        required: true
+        type: string
+      - in: query
+        name: userID
+        description: pass a userID to get the specific friend list
+        required: true
+        type: string
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+    post:
+      tags:
+      - friends
+      summary: creates friendList 
+      operationId: createfriendlist
+      description: |
+        Needs to be made before adding friends 
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: pass a userID to create a friendlist object for user
+        required: true
+        type: string
+      - in: body
+        name: friendlist
+        description: creates a list 
+        required: true
+        schema:
+          $ref: '#/definitions/Friendlist'
+      responses:
+        200:
+            description: search results matching criteria
+            # schema:
+            #   type: array
+            #   items:
+            #     $ref: '#/definitions/InventoryItem'
+        400:
+            description: bad input parameter
+  /friends/{userID}/friend:
+    get:
+      tags:
+      - friends
+      summary: get the a specific friend of a user
+      operationId: findspecificfriend
+      description: |
+        By passing in the appropriate options, you can find one friend of the specific user, *must be not the specific user requesting, returns 
+      # Note//: Could combine the two friendlist and friend get with current user userID being friendlist and any other id being a specific search
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: pass a userID the friend list for that user
+        required: true
+        type: string
+      - in: query
+        name: userID
+        description: pass a userID to get the specific friend
+        required: true
+        type: string
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  /friends/{userID}/friend/{friendlistID}:
+    post:
+      tags:
+      - friends
+      summary: creates a friend
+      operationId: createfriend
+      description: |
+        Needs to be made before adding friends 
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: friendlistID
+        description: pass a friendlistID to create a friendlist object for user
+        required: true
+        type: string
+      - in: path
+        name: userID
+        description: pass a userID to create a friend object for the user
+        required: true
+        type: string
+      - in: body
+        name: friend
+        description: creates a friend 
+        required: true
+        schema:
+          $ref: '#/definitions/Friend'
+      responses:
+        200:
+            description: search results matching criteria
+            # schema:
+            #   type: array
+            #   items:
+            #     $ref: '#/definitions/InventoryItem'
+        400:
+            description: bad input parameter
+  /friends/{userID}:
+    delete:
+      tags:
+      - friends
+      summary: removes friend
+      operationId: removesfriend
+      description: |
+        By passing in the appropriate options (), you can delete a single friend from the friend list
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: pass an in userID to specify whose prediction you want deleted, casscading 
+        required: true
+        type: string
+      - in: query
+        name: personalUserID
+        required: true
+        description: personal userID used to find the friend list
+        type: string
+      responses:
+        200:
+          description: search results matching criteria
+          # schema:
+          #   type: array
+          #   items:
+          #     $ref: '#/definitions/InventoryItem'
+        400:
+          description: bad input parameter
+   
+  /users/login:
+    post:
+      tags:
+      - users
+      summary: login in users
+      operationId: login
+      description: |
+        By passing in the appropriate credentials user is logged in
+        # //NOTE: Not sure if this is correct
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      parameters:
+      - in: formData
+        name: email
+        type: string
+        description: pass appropriate email in to validate login
+        required: true
+      - in: formData
+        name: password
+        type: string
+        description: pass appropriate password associated with email in to validate login
+        required: true
+      responses:
+        200:
+          description: search results matching criteria
+          # schema:
+          #   type: array
+          #   items:
+          #     $ref: '#/definitions/InventoryItem'
+        400:
+          description: bad input parameter
+  /users/register:
+    post:
+      tags:
+      - users
+      summary: register user
+      operationId: register
+      description: registers user and adds user to database
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: user
+        description: user object to be added to database
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+  /users/profile/{userID}:
+    get:
+      tags:
+      - users
+      summary: finds all perdictions or specific perdiction
+      operationId: findperdictions
+      description: |
+        By passing in the appropriate options, you can search for
+        the user profile you are requesting
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: userID
+        description: recieve userID to find associated 
+        required: true
+        type: string
+       
+      responses:
+        200:
+          description: search results matching criteria
+          # schema:
+          #   type: array
+          #   items:
+          #     $ref: '#/definitions/InventoryItem'
+        400:
+          description: bad input parameter
+
+
+
+
+
+
+definitions:
+ Predictions:
+    type: object
+    required:
+    - score
+    - avg
+    - predictionID
+    - fightID
+    - userID
+    properties:
+      predictionID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      fightID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      userID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      score:
+        type: integer
+        example: 10
+      avg:
+        type: integer
+        example: 3.1
+      # manufacturer:
+      #   $ref: '#/definitions/Manufacturer'
+ User:
+    required:
+    - userID
+    - name
+    - password
+    - email
+    properties:
+      userID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Billy 
+      password:
+        type: string
+        example:  iojunaurhgiuahrg983769275r2t
+      email:
+        type: string
+        format: email
+        example: user@email.com
+ Friend:
+    required:
+    - friendID
+    - userID
+    - friendlistID
+    properties:
+      friendID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      userID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851 
+      friendlistID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+ Friendlist:
+    required:
+    - friendlistID
+    - userID
+    properties:
+      friendlistID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f085
+      userID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+ LocalLeague:
+    required:
+    - friendlistID
+    - name
+    - description
+    - public
+    - userID
+    properties:
+      friendlistID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f085
+      name:
+        type: string
+        example: My Friend List 
+      description:
+        type: string
+        example:  This is the list for my friends
+      public:
+        type: boolean
+        example:  true
+      userID:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+# basePath: /FightClub/Users/1.0.0
+schemes:
+ - https
+# Added by API Auto Mocking Plugin
+basePath: /FightClub/FightClubApi/1.0.0
