@@ -1,13 +1,13 @@
 //probably removing from user.js and app.js -> this file is for acces to my routes
 import session from './session';
 import user from './users';
-import rating from './rating';
-import initialpost from './initialpost';
+import predictions from './predictions';
+import friends from './friends';
 
  
 export default {
   session,
   user,
-  rating,
-  initialpost,
+  predictions,
+  friends,
 };
