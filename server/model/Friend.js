@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create the Friend Schema
-const Friendchema = new Schema({
+const FriendSchema = new Schema({
     fightlistID: {
         type: String,
         required: true

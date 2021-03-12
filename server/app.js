@@ -75,8 +75,6 @@ require('./config/passport')(passport);
 /**
  * -------------- ROUTES ----------------
  */
-// app.get('/', (req, res) =>{
-//     return res.send("<h1>Hello World</h1>")
 // })
 // Bring in the Users route
 const users = require('./routes/api/users');
@@ -95,47 +93,10 @@ app.use('/api/predictions', predictions);
 //Generally * is for finding all other requests beside the ones you have defined
 //and labling them as 404 errors -> may leave it
 
-
-
-
-
-
-
-
-
-
-
-
 //**After testing */
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'public/index.html'));
 // })
-
-
-
-
-
-
-
-
-
-
-//These are to be changed -> post, put, delete
-// app.get('/users/users', (req, res) => {
-//     return res.send('GET HTTP method on user resource');
-// });
-   
-// app.post('/api/users', (req, res) => {
-//     return res.send('POST HTTP method on user resource');
-//   });
-   
-// app.put('/api/users/:userId', (req, res) => {
-//     return res.send(`PUT HTTP method on user/${req.params.userId} resource`,);
-//   });
-   
-// app.delete('/api/users:userId', (req, res) => {
-//     return res.send(`DELETE HTTP method on user/${req.params.userId} resource`,);
-//   });
 
 
 /**

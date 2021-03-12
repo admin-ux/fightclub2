@@ -6,8 +6,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const key = require('../../config/keys').secret;
-// const InitialPost = require('../../model/InitialPost');
-// const Rating = require('../../model/Rating');
+const Predictions = require('../../model/Predicitions');
+const Friend = require('../../model/Friend');
+const Friendlist = require('../../model/Friendlist');
 const jwtDecode = require("jwt-decode");
 
 
@@ -18,9 +19,40 @@ const jwtDecode = require("jwt-decode");
 router.get('/:fightID', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
-    
-    if (!req){}
-    else{}
+    // ! Need to know if params is empty - no fightID
+    if (!req){
+        Predictions.find({
+            // Query
+            // Not sue where data is accessed from for user
+            userID: req.user.userID,
+            // fightID: req.params.fightID
+            
+
+        }).then(prediction =>{
+            if (!prediction){
+                return res.status(404).json({
+                    msg: "Username is not found.",
+                    success: false
+                });
+            }
+        })
+    }
+
+    else{
+        Predictions.findOne({
+            // Query
+            userID: req.user.userID,
+            fightID: req.params.fightID
+
+        }).then(prediction =>{
+            if (!prediction){
+                return res.status(404).json({
+                    msg: "Username is not found.",
+                    success: false
+                });
+            }
+        })
+    }
   
     
 });
