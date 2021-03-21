@@ -6,9 +6,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const key = require('../../config/keys').secret;
-const Predictions = require('../../model/Predicitions');
+const Predictions = require('../../model/Predictions');
 const Friend = require('../../model/Friend');
 const Friendlist = require('../../model/Friendlist');
+const Friendlist = require('../../validation/Predictions/validatePredictionCreation');
 const jwtDecode = require("jwt-decode");
 
 
@@ -56,7 +57,8 @@ router.get('/:fightID', passport.authenticate('jwt', {
   
     
 });
-// Get a specific fight prediciton of a specified user or **?*** all predictions ****?****
+// First FightID: Get a specific fight prediciton of a specified 
+// TODO Secondary userID : **?*** all predictions ****?****, Needs to be further discussed and developed
 router.get('/:userID/:fightID', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
@@ -69,7 +71,23 @@ router.post('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
     
-    
+    const { errors, isValid } = validatePredictionCreation(req.body);
+    let newPrediction = new Predictions({
+        predictionID: req.body.predictionID,
+        fightID: req.body.fightID,
+        userID: req.body.userID,
+        winner: req.body.winner,
+        winMethod: req.body.winMethod,
+        details:req.body.details
+    });
+
+    newPrediction.save()
+    .then(()=>{
+        return res.status(200).json({status:"ok"})
+    }).catch(()=>{
+        return res.status(400).json({error:"Error creating a new prediction"});
+    })
+ 
     
 });
 // Delete a specific predicition
@@ -80,6 +98,7 @@ router.delete('/:predictionID', passport.authenticate('jwt', {
     
   
 });
+
 // Edit a specific predictionID
 router.put('/:predictionID', passport.authenticate('jwt', {
     session: false

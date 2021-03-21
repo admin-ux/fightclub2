@@ -1,28 +1,24 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Create the Predictions Schema
-const PredictionsSchema = new Schema({
-    predicitionID: {
-        type: String,
-        required: true
-    },
+// Create the Friend Schema
+const FightResultSchema = new Schema({
     fightID: {
         type: String,
         required: true
     },
-    userID: {
+    fighter1: {
         type: String,
         required: true
     },
-    score: {
+    fighter2: {
         type: String,
         required: true
     },
-    avg: {
-        type: Number,
+    name: {
+        type: String,
         required: true
-    }
+    },
 });
 
-module.exports = Predictions = mongoose.model('predictions', PredictionsSchema);
+module.exports = FightResult = mongoose.model('fightresult', FightResultSchema);
