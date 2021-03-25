@@ -7,6 +7,10 @@ const FightResultSchema = new Schema({
         type: String,
         required: true
     },
+    fightresultID: {
+        type: String,
+        required: true
+    },
     winner: {
         type: Number,
         required: true

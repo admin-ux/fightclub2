@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create the Friend Schema
-const FightResultSchema = new Schema({
+const FightSchema = new Schema({
     fightID: {
         type: String,
         required: true
@@ -21,4 +21,4 @@ const FightResultSchema = new Schema({
     },
 });
 
-module.exports = FightResult = mongoose.model('fightresult', FightResultSchema);
+module.exports = Fight = mongoose.model('fight', FightSchema);
