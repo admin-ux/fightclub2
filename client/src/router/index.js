@@ -29,31 +29,17 @@ const routes = [
     component: () => import("../views/Register.vue")
   },
   {
-  path: "/searchresults",
-    name: "SearchResults",
-    component: () => import("../views/SearchResults.vue")
+    path: "/pickFighter",
+    name: "PickFighter",
+    component: () => import("../views/PickFighter.vue")
   },
   {
-    path: "/landlordratings",
-      name: "LandlordRatings",
-      component: () => import("../views/LandlordRatings.vue")
-    },
-    {
-      path: "/createpost",
-        name: "CreatePost",
-        component: () => import("../views/CreatePost.vue")
-      },
-      {
-        path: "/createrating",
-          name: "CreateRating",
-          component: () => import("../views/CreateRating.vue")
-        },
-  // {
-  //   path: "/serviceareas",
-  //   name: "ServiceAreas",
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/ServiceAreas.vue")
-  // }
+    path: "/rank",
+    name: "Rank",
+    component: () => import("../views/Rank.vue")
+  },
+
+  
 ];
 
 const router = new VueRouter({

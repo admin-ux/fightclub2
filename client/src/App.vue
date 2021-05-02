@@ -1,9 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <top-header></top-header>
-      <!-- <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> -->
+      <new-header></new-header>
     </div>
     <Errors v-if="error" :msg="error"/>
     <router-view/>
@@ -12,12 +10,12 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import Header from "@/components/Header.vue";
+import Header from "@/components/NewHeader.vue";
 import Footer from "@/components/Footer.vue";
 import Errors from "@/components/Errors.vue"
 export default {
   components: {
-    "top-header": Header,
+    "new-header": Header,
     "bottom-header": Footer,
     Errors
   },
@@ -29,7 +27,7 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
