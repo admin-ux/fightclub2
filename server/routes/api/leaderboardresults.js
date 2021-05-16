@@ -9,7 +9,7 @@ const key = require('../../config/keys').secret;
 const Predictions = require('../../model/Predictions');
 const Friend = require('../../model/Friend');
 const Friendlist = require('../../model/Friendlist');
-const Friendlist = require('../../validation/Predictions/validatePredictionCreation');
+const validatePredictionCreation = require('../../validation/Predictions/validatePredictionCreation');
 const jwtDecode = require("jwt-decode");
 const FightResult = require('../../model/FightResult');
 const Leaderboard = require('../../model/Leaderboard');
@@ -57,6 +57,7 @@ router.post('/', passport.authenticate('jwt', {
             fightresultID: req.body.fightresultID,
             winner: req.body.winner,
             winMethod: req.body.winMethod,
+            details: req.body.details,
             name: req.body.name,
         });
         newFightResult.save()
@@ -111,16 +112,25 @@ router.post('/', passport.authenticate('jwt', {
                     if (singlePrediction.winner==req.body.winner)
                     {
                         leaderboardPosition.totalWins=leaderboardPosition.totalWins+1
+                        
+                        leaderboardPosition.score=leaderboardPosition.score+10
+
+                        if (singlePrediction.winMethod==req.body.winMethod)
+                        {
+                            // ! Ask Caleb about scoring system -> This is not correct
+                            leaderboardPosition.score=leaderboardPosition.score+5
+                        }
+                        if (singlePrediction.details==req.body.details)
+                        {
+                            leaderboardPosition.score=leaderboardPosition.score+5
+
+                        }
                     
                     }
                     // ! Make sure this number increased & that they are both int's
                     leaderboardPosition.winPercentage =leaderboardPosition.totalWins/leaderboardPosition.totalPredictions
                     
-                    if (singlePrediction.winMethod==req.body.winMethod)
-                    {
-                        // ! Ask Caleb about scoring system -> This is not correct
-                        leaderboardPosition.score=leaderboardPosition.score+1
-                    }
+                    
                     // ! Make sure this number increased & that they are both int's
                     leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
 
@@ -182,34 +192,30 @@ router.post('/', passport.authenticate('jwt', {
         // winMethod: req.body.winMethod,
         // details:req.body.details
         // ! leaderboard
-        // leaderboardID: {
+        // fightID: {
         //     type: String,
         //     required: true
         // },
-        // userID: {
+        // fightresultID: {
         //     type: String,
         //     required: true
         // },
-        // totalPredictions: {
+        // winner: {
         //     type: Number,
         //     required: true
         // },
-        // totalWins: {
+        // winMethod: {
         //     type: Number,
         //     required: true
         // },
-        // averagePointsPerWin: {
+        // detail: {
         //     type: Number,
         //     required: true
         // },
-        // winPercentage: {
-        //     type: Number,
+        // name: {
+        //     type: String,
         //     required: true
         // },
-        // score: {
-        //     type: Number,
-        //     required: true
-        // }
 });
 // Delete a specific result and their respective scores
 // 1) Find all predictions of users that made a prediction for this fight
@@ -276,28 +282,31 @@ router.delete('/:fightresultID', passport.authenticate('jwt', {
                         }
                         // ! Need to check if prediction can be accessed in another query, should work though
                         
-                        totalWins=0
-                        totalPredictions=0
-                        averagePointsPerWin=0
-                        winPercentage=0
-                        score=0
                         // Increase Prediction number made
                         leaderboardPosition.totalPredictions=leaderboardPosition.totalPredictions-1
+
+                     
+                        // ! Make sure this number increased & that they are both int's
 
                         if (singlePrediction.winner==fightresult.winner)
                         {
                             leaderboardPosition.totalWins=leaderboardPosition.totalWins-1
-                        
+                            
+                            leaderboardPosition.score=leaderboardPosition.score-10
+    
+                            if (singlePrediction.winMethod==fightresult.winMethod)
+                            {
+                                // ! Ask Caleb about scoring system -> This is not correct
+                                leaderboardPosition.score=leaderboardPosition.score-5
+                            }
+                            if (singlePrediction.details==fightresult.details)
+                            {
+                                leaderboardPosition.score=leaderboardPosition.score-5
+    
+                            }
                         }
-                        // ! Make sure this number increased & that they are both int's
-                        leaderboardPosition.winPercentage =leaderboardPosition.totalWins/leaderboardPosition.totalPredictions
+
                         
-                        if (singlePrediction.winMethod==fightresult.winMethod)
-                        {
-                            // ! Ask Caleb about scoring system -> This is not correct
-                            leaderboardPosition.score=leaderboardPosition.score-1
-                        }
-                        // ! Make sure this number increased & that they are both int's
                         leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
 
                         leaderboardPosition.save
@@ -404,42 +413,40 @@ router.put('/:fightresultID', passport.authenticate('jwt', {
                         if (singlePrediction.winner==fightresult.winner)
                         {
                             leaderboardPosition.totalWins=leaderboardPosition.totalWins-1
-                        
+                            
+                            leaderboardPosition.score=leaderboardPosition.score-10
+    
+                            if (singlePrediction.winMethod==fightresult.winMethod)
+                            {
+                                // ! Ask Caleb about scoring system -> This is not correct
+                                leaderboardPosition.score=leaderboardPosition.score-5
+                            }
+                            if (singlePrediction.details==fightresult.details)
+                            {
+                                leaderboardPosition.score=leaderboardPosition.score-5
+    
+                            }
                         }
-                        // ! Make sure this number increased & that they are both int's
-                        leaderboardPosition.winPercentage =leaderboardPosition.totalWins/leaderboardPosition.totalPredictions
-                        
-                        if (singlePrediction.winMethod==fightresult.winMethod)
-                        {
-                            // ! Ask Caleb about scoring system -> This is not correct
-                            leaderboardPosition.score=leaderboardPosition.score-1
-                        }
-                        // ! Make sure this number increased & that they are both int's
-                        leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
-
-
-
 
                         // 3 (B) Evaluate new Results
 
                         if (singlePrediction.winner==req.body.winner)
                         {
-                            leaderboardPosition.totalWins=leaderboardPosition.totalWins+1
-                        
+                            leaderboardPosition.totalWins=leaderboardPosition.totalWins-1
+                            
+                            leaderboardPosition.score=leaderboardPosition.score-10
+    
+                            if (singlePrediction.winMethod==req.body.winMethod)
+                            {
+                                // ! Ask Caleb about scoring system -> This is not correct
+                                leaderboardPosition.score=leaderboardPosition.score-5
+                            }
+                            if (singlePrediction.details==req.body.details)
+                            {
+                                leaderboardPosition.score=leaderboardPosition.score-5
+    
+                            }
                         }
-                        // ! Make sure this number increased & that they are both int's
-                        leaderboardPosition.winPercentage =leaderboardPosition.totalWins/leaderboardPosition.totalPredictions
-                        
-                        if (singlePrediction.winMethod==req.body.winMethod)
-                        {
-                            // ! Ask Caleb about scoring system -> This is not correct
-                            leaderboardPosition.score=leaderboardPosition.score+1
-                        }
-                        // ! Make sure this number increased & that they are both int's
-                        leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
-
-
-
 
                         leaderboardPosition.save
                         .then(()=>{
@@ -472,8 +479,9 @@ router.put('/:fightresultID', passport.authenticate('jwt', {
                 fightresultID: req.body.fightresultID,
                 winner: req.body.winner,
                 winMethod: req.body.winMethod,
+                details: req.body.details,
                 name: req.body.name,
-        }
+            }
     
         }).then(()=>{
             return res.status(200).json({status:"ok"})

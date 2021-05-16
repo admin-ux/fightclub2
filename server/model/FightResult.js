@@ -19,6 +19,10 @@ const FightResultSchema = new Schema({
         type: Number,
         required: true
     },
+    details: {
+        type: Number,
+        required: true
+    },
     name: {
         type: String,
         required: true
