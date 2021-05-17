@@ -53,17 +53,19 @@ function issueJWT(user) {
 
   const expiresIn = '1d';
 
-  //******REVIEW KEEPING USERNAME AND EMAIL AND NAME IN AN UNSECURE TOKEN */
+  
   const payload = {
     sub: _id,
     iat: Date.now(),
+    // sub
     username: user.username,
     name: user.name,
     email: user.email
+    // Could add type of user here
   };
 
   const signedToken = jsonwebtoken.sign(payload, PRIV_KEY, { expiresIn: expiresIn, algorithm: 'RS256' });
-
+  // console.log(signedToken);
   return {
     token: "Bearer " + signedToken,
     expires: expiresIn

@@ -11,13 +11,14 @@ const opts = {
 };
 
 const theJWTStrategy = new JwtStartegy(opts,(payload,done)=>{
-    User.findById({_id: payload.sub}).then(user => {
+    User.findOne({_id: payload.sub}).then(user => {
+        
         if (user) {
             return done(null, user);
         }else{
             return done(null, false);
         }
-    }).catch(err => console.log(err));
+    }).catch(err => done(err, null));
 })
 
 module.exports = passport => {

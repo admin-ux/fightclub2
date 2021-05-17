@@ -7,6 +7,7 @@ const key = require('../../config/keys').secret;
 const User = require('../../model/User');
 const utils = require('../../lib/utils');
 const jwtDecode = require("jwt-decode");
+const Leaderboard = require('../../model/Leaderboard');
 //Should these routes be asycned
 //**Note:Removed use from app.js paths may be broken, 
 //       may need to include a leadding period
@@ -64,11 +65,69 @@ router.post('/register', (req, res) => {
             newUser.password = hash;
             newUser.save()
                 .then((user) => {
-                    const jwt = utils.issueJWT(user)
-                    res.status(201).json({success:true, user: user, token: jwt.token, expiresIn: jwt.expiresIn})
+                    
+                   
+                    // Add new user to leaderboard
+                    let newLeaderboard = new Leaderboard({
+                        // ! Might just use the object id as the id for all the actual models id
+                        leaderboardID: "0",
+                        totalPredictions: 0,
+                        userID: user._id,
+                        totalWins: 0,
+                        averagePointsPerWin:0,
+                        winPercentage:0,
+                        score:0
+                    });
+                
+                    newLeaderboard.save()
+                    .then(()=>{
+                        
+                        // JWT Attached to response
+                        const jwt = utils.issueJWT(user)
+                        res.status(201).json({success:true, user: user, token: jwt.token, expiresIn: jwt.expiresIn})
+
+
+                    }).catch(()=>{
+                        return res.status(400).json({error:"Error creating a new leaderboard"});
+                    })
+
+
+                    
                     });
                 });
         });
+        
+        
+
+        // leaderboardID: {
+        //     type: String,
+        //     required: true
+        // },
+        // userID: {
+        //     type: String,
+        //     required: true
+        // },
+        // totalPredictions: {
+        //     type: Number,
+        //     required: true
+        // },
+        // totalWins: {
+        //     type: Number,
+        //     required: true
+        // },
+        // averagePointsPerWin: {
+        //     type: Number,
+        //     required: true
+        // },
+        // winPercentage: {
+        //     type: Number,
+        //     required: true
+        // },
+        // score: {
+        //     type: Number,
+        //     required: true
+        // }
+
     });
 // });
 // bcrypt.genSalt(10, (err, salt) => {
@@ -134,7 +193,11 @@ router.post('/login', (req, res) => {
                 });
             }
         })
-    });
+    })
+    .catch((err) => {
+        // do seomthing with the error
+        return res.status(400).json({error:"Error logging in"});
+        })
 });
 
 
@@ -155,9 +218,12 @@ router.post('/login', (req, res) => {
 router.get('/profile', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
+    console.log("QQQQQQQQQQQQQQQ");
     return res.json({
         user: req.user
+
     });
+    // res.status(200).json({success:true,msg:'You are Authorized'})
     
 });
 module.exports = router;
