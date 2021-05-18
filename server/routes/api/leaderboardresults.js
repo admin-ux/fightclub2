@@ -29,12 +29,75 @@ const Leaderboard = require('../../model/Leaderboard');
 // Get 
 // 1) a specific leaderboard result / user
 // 2) specific number of results 
-// 3) Get all leaderboard results
+// 3) Get all leaderboard results for a specific leaderboard
 // ! Should probably be querying for users and not fights
-router.get('/leaderboard/:fightID', passport.authenticate('jwt', {
+router.get('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
-   
+        const numberOfResults=Number(req.body.numberOfResults);
+        // 1) a specific leaderboard result / user
+        if (req.body.leaderboardID && req.body.userID){
+            Leaderboard.findOne({
+                // Query
+                userID: req.body.userID,
+                leaderboardID: req.body.leaderboardID
+    
+            }).then(leaderboardresult =>{
+                if (!leaderboardresult){
+                    return res.status(404).json({
+                        msg: "Users specific leaderboard result could not be found",
+                        success: false
+                    });
+                }
+                else {
+                    return res.status(200).json(leaderboardresult);
+                }
+            }).catch(()=>{
+                return res.status(400).json({error:"Error in finding leaderboard result for user"});
+            })
+        }
+        // 2) specific number of results 
+        else if  (req.body.leaderboardID && req.body.numberOfResults){
+            Leaderboard.find({
+                // Query
+                leaderboardID: req.body.leaderboardID,
+    
+            }).limit(numberOfResults).then(leaderboardresult =>{
+                if (!leaderboardresult){
+                    return res.status(404).json({
+                        msg: "Any leaderboard result for this user could not be found",
+                        success: false
+                    });
+                }
+                else {
+                    return res.status(200).json(leaderboardresult);
+                }
+            }).catch(()=>{
+                return res.status(400).json({error:"Error in finding leaderboard result for specific number of users"});
+            })
+        }
+        // 3) Get all leaderboard results for a specific leaderboard
+        else{
+            Leaderboard.find({
+                // Query
+                leaderboardID: req.body.leaderboardID
+                
+    
+            }).then(leaderboardresult =>{
+                if (!leaderboardresult){
+                    return res.status(404).json({
+                        msg: "Leaderboard result could not be found",
+                        success: false
+                    });
+                }
+                else {
+                    return res.status(200).json(leaderboardresult);
+                }
+            }).catch(()=>{
+                return res.status(400).json({error:"Error in finding leaderboard result for all users"});
+            })
+        }
+    
     
 });
 
@@ -62,160 +125,125 @@ router.post('/', passport.authenticate('jwt', {
         });
         newFightResult.save()
         .then(()=>{
-            return res.status(200).json({status:"ok"})
+            // return res.status(200).json({status:"ok"})
+            Predictions.find({
+            
+                fightID: req.body.fightID,
+              
+            }).then(predictions =>{
+                if (!predictions){
+                    return res.status(404).json({
+                        msg: "No fights find for the current fight result.",
+                        success: false
+                    });
+                }
+                // *********************************************************************
+                // 3) Go through Prediction and match to fight result entered add score to 
+                // users individual result then input into Database
+                // **********************************************************************
+    
+                // Could use for each to extract individual predictions in prediction
+             
+                predictions.forEach(function(singlePrediction)
+                {
+               
+    
+                //3) (A) Query for users Leaderboard results
+    
+                    Leaderboard.findOne({
+                        // Query
+                        userID: singlePrediction.userID,
+                        
+                    }).then(leaderboardPosition =>{
+                        if (!leaderboardPosition){
+                            return res.status(404).json({
+                                msg: "User from leaderboard not found.",
+                                success: false
+                            });
+                        }
+
+                        
+
+                        // ! Need to check if prediction can be accessed in another query, should work though
+                        // Increase Prediction number made
+                        leaderboardPosition.totalPredictions=leaderboardPosition.totalPredictions+1
+                        
+    
+                        if (singlePrediction.winner==req.body.winner)
+                        {
+                            leaderboardPosition.totalWins=leaderboardPosition.totalWins+1
+                            
+                            leaderboardPosition.score=leaderboardPosition.score+10
+    
+                            if (singlePrediction.winMethod==req.body.winMethod)
+                            {
+                                // ! Ask Caleb about scoring system -> This is not correct
+                                leaderboardPosition.score=leaderboardPosition.score+5
+                            }
+                            if (singlePrediction.details==req.body.details)
+                            {
+                                leaderboardPosition.score=leaderboardPosition.score+5
+    
+                            }
+                        
+                        }
+
+                        
+
+
+                        // ! Make sure this number increased & that they are both int's
+                        // leaderboardPosition.winPercentage =leaderboardPosition.totalWins/leaderboardPosition.totalPredictions
+                        
+                        
+                        // ! Make sure this number increased & that they are both int's
+                        // leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
+                        Leaderboard.updateOne(
+                            {"leaderboardID" : leaderboardPosition.leaderboardID,
+                            "userID":leaderboardPosition.userID},
+                            {$set: {
+                                leaderboardID: leaderboardPosition.leaderboardID,
+                                totalPredictions: leaderboardPosition.totalPredictions,
+                                userID: leaderboardPosition.userID,
+                                totalWins: leaderboardPosition.totalWins,
+                                averagePointsPerWin: leaderboardPosition.averagePointsPerWin,
+                                winPercentage:leaderboardPosition.winPercentage,
+                                score:leaderboardPosition.score
+                        }
+                        // leaderboardPosition.save
+                        }).then(()=>{
+                            return res.status(200).json({status:"ok"})
+                        }).catch(()=>{
+                            return res.status(400).json({error:"Error creating new leaderboard Position for a user"});
+                        })
+                        
+    
+                    }).catch(()=>{
+                        return res.status(400).json({error:"Error in finding predictions for user"});
+                    })
+                
+    
+                    //3) (B) Add new values and score to results
+    
+    
+    
+                    //3) (C) Post users new results to Database
+    
+                })
+    
+            
+            }).catch(()=>{
+                return res.status(400).json({error:"Error in finding predictions for any users"});
+            })
         }).catch(()=>{
             return res.status(400).json({error:"Error creating a new Fight Result"});
         })
         // 2) Query Predictions of Fight result for all predictions and use algorithm to get
         //  points for each user
-        Predictions.find({
-            
-            fightID: req.body.fightID,
-          
-        }).then(predictions =>{
-            if (!predictions){
-                return res.status(404).json({
-                    msg: "No fights find for the current fight result.",
-                    success: false
-                });
-            }
-            // *********************************************************************
-            // 3) Go through Prediction and match to fight result entered add score to 
-            // users individual result then input into Database
-            // **********************************************************************
-
-            // Could use for each to extract individual predictions in prediction
-         
-            print("@@@@@@@@@@@@@@@@@@@@@@")
-            predictions.forEach(function(singlePrediction)
-            {
-           
-
-            //3) (A) Query for users Leaderboard results
-
-                Leaderboard.findOne({
-                    // Query
-                    userID: singlePrediction.userID,
         
-                }).then(leaderboardPosition =>{
-                    if (!leaderboardPosition){
-                        return res.status(404).json({
-                            msg: "User from leaderboard not found.",
-                            success: false
-                        });
-                    }
-                    // ! Need to check if prediction can be accessed in another query, should work though
-                    
-                    // Increase Prediction number made
-                    leaderboardPosition.totalPredictions=leaderboardPosition.totalPredictions+1
-
-                    if (singlePrediction.winner==req.body.winner)
-                    {
-                        leaderboardPosition.totalWins=leaderboardPosition.totalWins+1
-                        
-                        leaderboardPosition.score=leaderboardPosition.score+10
-
-                        if (singlePrediction.winMethod==req.body.winMethod)
-                        {
-                            // ! Ask Caleb about scoring system -> This is not correct
-                            leaderboardPosition.score=leaderboardPosition.score+5
-                        }
-                        if (singlePrediction.details==req.body.details)
-                        {
-                            leaderboardPosition.score=leaderboardPosition.score+5
-
-                        }
-                    
-                    }
-                    // ! Make sure this number increased & that they are both int's
-                    leaderboardPosition.winPercentage =leaderboardPosition.totalWins/leaderboardPosition.totalPredictions
-                    
-                    
-                    // ! Make sure this number increased & that they are both int's
-                    leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
-
-                    leaderboardPosition.save
-                    .then(()=>{
-                        return res.status(200).json({status:"ok"})
-                    }).catch(()=>{
-                        return res.status(400).json({error:"Error creating new leaderboard Position for a user"});
-                    })
-                
-
-                }).catch(()=>{
-                    return res.status(400).json({error:"Error in finding predictions for user"});
-                })
-            
-
-                //3) (B) Add new values and score to results
-
-
-
-                //3) (C) Post users new results to Database
-
-            })
-
-        
-        }).catch(()=>{
-            return res.status(400).json({error:"Error in finding predictions for any users"});
-        })
 
         
         // 3) Insert to each user leaderboard spot and {user account} ?????????????????????     
     
-        // ! FightResult
-        // fightID: {
-        //     type: String,
-        //     required: true
-        // },
-        // fightresultID: {
-        //     type: String,
-        //     required: true
-        // },
-        // winner: {
-        //     type: Number,
-        //     required: true
-        // },
-        // winMethod: {
-        //     type: Number,
-        //     required: true
-        // },
-        // name: {
-        //     type: String,
-        //     required: true
-        // }, 
-        // ! prediction
-        // predictionID: req.body.predictionID,
-        // fightID: req.body.fightID,
-        // userID: req.body.userID,
-        // winner: req.body.winner,
-        // winMethod: req.body.winMethod,
-        // details:req.body.details
-        // ! leaderboard
-        // fightID: {
-        //     type: String,
-        //     required: true
-        // },
-        // fightresultID: {
-        //     type: String,
-        //     required: true
-        // },
-        // winner: {
-        //     type: Number,
-        //     required: true
-        // },
-        // winMethod: {
-        //     type: Number,
-        //     required: true
-        // },
-        // detail: {
-        //     type: Number,
-        //     required: true
-        // },
-        // name: {
-        //     type: String,
-        //     required: true
-        // },
 });
 // Delete a specific result and their respective scores
 // 1) Find all predictions of users that made a prediction for this fight
@@ -224,7 +252,7 @@ router.post('/', passport.authenticate('jwt', {
 // 4) Save result to leaderboard 
 // 5) Once has been done for all predictions Delete fightResult 
 // ! This must be cascading to users and leaderboards
-router.delete('/:fightresultID', passport.authenticate('jwt', {
+router.delete('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
         // 
@@ -232,7 +260,7 @@ router.delete('/:fightresultID', passport.authenticate('jwt', {
 
         FightResult.findOne({
             // Query
-            fightresultID: req.params.fightresultID
+            fightresultID: req.body.fightresultID
 
         }).then(fightresult =>{
             if (!fightresult){
@@ -262,7 +290,7 @@ router.delete('/:fightresultID', passport.authenticate('jwt', {
 
                 // Could use for each to extract individual predictions in prediction
             
-                print("@@@@@@@@@@@@@@@@@@@@@@")
+                console.log("@@@@@@@@@@@@@@@@@@@@@@")
                 predictions.forEach(function(singlePrediction)
                 {
             
@@ -309,9 +337,29 @@ router.delete('/:fightresultID', passport.authenticate('jwt', {
                         
                         leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
 
-                        leaderboardPosition.save
-                        .then(()=>{
-                            return res.status(200).json({status:"ok"})
+                        Leaderboard.updateOne(
+                            {"leaderboardID" : leaderboardPosition.leaderboardID,
+                            "userID":leaderboardPosition.userID},
+                            {$set: {
+                                leaderboardID: leaderboardPosition.leaderboardID,
+                                totalPredictions: leaderboardPosition.totalPredictions,
+                                userID: leaderboardPosition.userID,
+                                totalWins: leaderboardPosition.totalWins,
+                                averagePointsPerWin: leaderboardPosition.averagePointsPerWin,
+                                winPercentage:leaderboardPosition.winPercentage,
+                                score:leaderboardPosition.score
+                        }
+                        // leaderboardPosition.save
+                        }).then(()=>{
+                            FightResult.deleteOne({
+
+                                fightresultID: req.body.fightresultID
+                        
+                            }).then(()=>{
+                                return res.status(200).json({status:"ok"})
+                            }).catch(()=>{
+                                return res.status(400).json({error:"Error deleting a new fightresult"});
+                            })
                         }).catch(()=>{
                             return res.status(400).json({error:"Error creating new leaderboard Position for a user"});
                         })
@@ -333,15 +381,7 @@ router.delete('/:fightresultID', passport.authenticate('jwt', {
         })
 
         // Deleting the Result after having completing editing every users leaderboard scores
-        FightResult.deleteOne({
-
-            fightresultID: req.params.fightresultID
-    
-        }).then(()=>{
-            return res.status(200).json({status:"ok"})
-        }).catch(()=>{
-            return res.status(400).json({error:"Error deleting a new fightresult"});
-        })
+        
     
 
 
@@ -349,13 +389,14 @@ router.delete('/:fightresultID', passport.authenticate('jwt', {
 
 // Edit a specific result
 // ! This must be cascading to users and leaderboards
-router.put('/:fightresultID', passport.authenticate('jwt', {
+ 
+router.put('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
 
         FightResult.findOne({
             // Query
-            fightresultID: req.params.fightresultID
+            fightresultID: req.body.fightresultID
 
         }).then(fightresult =>{
             if (!fightresult){
@@ -385,7 +426,7 @@ router.put('/:fightresultID', passport.authenticate('jwt', {
 
                 // Could use for each to extract individual predictions in prediction
             
-                print("@@@@@@@@@@@@@@@@@@@@@@")
+                console.log("@@@@@@@@@@@@@@@@@@@@@@")
                 predictions.forEach(function(singlePrediction)
                 {
             
@@ -403,7 +444,7 @@ router.put('/:fightresultID', passport.authenticate('jwt', {
                                 success: false
                             });
                         }
-
+                        
                         // 3 (B) Remove Previous Results
 
                         // ! Need to check if prediction can be accessed in another query, should work though
@@ -432,25 +473,54 @@ router.put('/:fightresultID', passport.authenticate('jwt', {
 
                         if (singlePrediction.winner==req.body.winner)
                         {
-                            leaderboardPosition.totalWins=leaderboardPosition.totalWins-1
+                            leaderboardPosition.totalWins=leaderboardPosition.totalWins+1
                             
-                            leaderboardPosition.score=leaderboardPosition.score-10
+                            leaderboardPosition.score=leaderboardPosition.score+10
     
                             if (singlePrediction.winMethod==req.body.winMethod)
                             {
                                 // ! Ask Caleb about scoring system -> This is not correct
-                                leaderboardPosition.score=leaderboardPosition.score-5
+                                leaderboardPosition.score=leaderboardPosition.score+5
                             }
                             if (singlePrediction.details==req.body.details)
                             {
-                                leaderboardPosition.score=leaderboardPosition.score-5
+                                leaderboardPosition.score=leaderboardPosition.score+5
     
                             }
                         }
+                        
 
-                        leaderboardPosition.save
-                        .then(()=>{
-                            return res.status(200).json({status:"ok"})
+                        Leaderboard.updateOne(
+                            {"leaderboardID" : leaderboardPosition.leaderboardID,
+                            "userID":leaderboardPosition.userID},
+                            {$set: {
+                                leaderboardID: leaderboardPosition.leaderboardID,
+                                totalPredictions: leaderboardPosition.totalPredictions,
+                                userID: leaderboardPosition.userID,
+                                totalWins: leaderboardPosition.totalWins,
+                                averagePointsPerWin: leaderboardPosition.averagePointsPerWin,
+                                winPercentage:leaderboardPosition.winPercentage,
+                                score:leaderboardPosition.score
+                        }
+                        // leaderboardPosition.save
+                        }).then(()=>{
+                           
+                            FightResult.updateOne(
+                                {"fightresultID" : req.body.fightresultID},
+                                {$set: {
+                                    fightID: req.body.fightID,
+                                    fightresultID: req.body.fightresultID,
+                                    winner: req.body.winner,
+                                    winMethod: req.body.winMethod,
+                                    details: req.body.details,
+                                    name: req.body.name,
+                                }
+                        
+                            }).then(()=>{
+                                return res.status(200).json({status:"ok"})
+                            }).catch(()=>{
+                                return res.status(400).json({error:"Error editing a prediction"});
+                            });
                         }).catch(()=>{
                             return res.status(400).json({error:"Error creating new leaderboard Position for a user"});
                         })
@@ -472,22 +542,7 @@ router.put('/:fightresultID', passport.authenticate('jwt', {
         })
 
         // Deleting the Result after having completing editing every users leaderboard scores
-        FightResult.update(
-            {"fightresultID" : req.params.fightresultID},
-            {$set: {
-                fightID: req.body.fightID,
-                fightresultID: req.body.fightresultID,
-                winner: req.body.winner,
-                winMethod: req.body.winMethod,
-                details: req.body.details,
-                name: req.body.name,
-            }
-    
-        }).then(()=>{
-            return res.status(200).json({status:"ok"})
-        }).catch(()=>{
-            return res.status(400).json({error:"Error editing a prediction"});
-        });
+        
         
  
 });
