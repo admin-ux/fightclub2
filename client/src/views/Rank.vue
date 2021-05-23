@@ -1,53 +1,65 @@
 <template>
-  <div>
-      <h1>Overall</h1>
-        <p class="mt-4">Users: {{ rows }}</p>
-    <b-table
-      id="my-table"
-      :items="items"
-      :fields="fields"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :per-page="perPage"
-      :current-page="currentPage"
-      responsive="sm"
-    ></b-table>
-    <b-pagination
+    <div>
+        <h3>Rank</h3>
+        <div>
+          <b-pagination
       v-model="currentPage"
       :total-rows="rows"
       :per-page="perPage"
       aria-controls="my-table"
     ></b-pagination>
-  </div>
+            <b-table striped hover :items="allTodos" :per-page="perPage"
+      :current-page="currentPage"></b-table>
+    </div>
+
+    </div>
 </template>
 
 <script>
-  export default {
-    data() {
+import { mapGetters, mapActions } from 'vuex';
+export default {
+  data() {
       return {
-        perPage: 3,
+        perPage: 10,
         currentPage: 1,
-        sortBy: 'rank',
-        sortDesc: false,
-        fields: [
-          { key: 'rank', sortable: true },
-          { key: 'user_name', sortable: true },
-        ],
-        items: [
-          { rank: 40, user_name: 'Dickerson',},
-          { rank: 21, user_name: 'Larsen', },
-          { rank: 89, user_name: 'Geneva', },
-          { rank: 38, user_name: 'Jami', }
-        ]
       }
     },
-    computed: {
+    name:"Todos",
+    methods:{
+        ...mapActions(['fetchTodos']) 
+    },
+    created(){
+        this.fetchTodos();
+    },
+     computed: {
+       ...mapGetters(['allTodos']),
       rows() {
-        return this.items.length
-      },
-      amountOfUsers(){
-          return this.user_name.length
+        return this.allTodos.length
       }
-    }
-  }
+}
+}
 </script>
+
+<style>
+ .todos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
+.todo {
+  border: 1px solid #ccc;
+  background: #41b883;
+  padding: 1rem;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+}
+
+</style>
