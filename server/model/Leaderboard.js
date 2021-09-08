@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Create the Predictions Schema
+// Create the GLOBAL Leaderboard Schema
 const LeaderboardSchema = new Schema({
     leaderboardID: {
         type: String,
