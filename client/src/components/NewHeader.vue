@@ -7,16 +7,16 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item to="/pickFighter" v-if="!isLoggedIn">Pick'Em</b-nav-item>
-          <b-nav-item to="/about" v-if="!isLoggedIn">About</b-nav-item>
-          <b-nav-item to="/profile" v-if="!isLoggedIn">Profile</b-nav-item>
-          <b-nav-item to="/rank" v-if="!isLoggedIn">Rank</b-nav-item>
+          <b-nav-item to="/pickFighter" v-if="isLoggedIn">Pick'Em</b-nav-item>
+          <b-nav-item to="/about" v-if="isLoggedIn">About</b-nav-item>
+          <b-nav-item to="/profile" v-if="isLoggedIn">Profile</b-nav-item>
+          <b-nav-item to="/rank" v-if="isLoggedIn">Rank</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-                  <b-nav-item to="/register">Register</b-nav-item>
-                  <b-nav-item to="/login">Login</b-nav-item>
+                  <b-nav-item to="/register" v-if="!isLoggedIn">Register</b-nav-item>
+                  <b-nav-item to="/login2" v-if="!isLoggedIn">Login</b-nav-item>
                   <b-nav-item href="/logout" v-if="isLoggedIn" @click.prevent="logoutUser">Logout</b-nav-item>
 
         </b-navbar-nav>
@@ -40,7 +40,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style  scoped>
 #nav a.router-link-exact-active {
   background: black;
   border-radius: 5px;

@@ -14,9 +14,11 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 export default {
-  computed: mapGetters(["user"]),
+  
+  computed: mapGetters(["user"]), 
+
   methods: {
-    ...mapActions(["getProfile"])
+    ...mapActions(["getProfile"]),
   },
   created() {
     this.getProfile();

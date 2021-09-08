@@ -10,6 +10,7 @@ const Predictions = require('../../model/Predictions');
 const Friend = require('../../model/Friend');
 const Friendlist = require('../../model/Friendlist');
 const jwtDecode = require("jwt-decode");
+const { request } = require('express');
 // const validatePredictionCreation = require('../../validation/Predictions/validatePredictionCreation');
 
 // ! Need to figure out security and stradegy around retrieving/ querring predicitons of users
@@ -27,7 +28,6 @@ router.get('/', passport.authenticate('jwt', {
             // Query
             userID: req.body.userID,
             fightID: req.body.fightID
-
         }).then(prediction =>{
             if (!prediction){
                 return res.status(404).json({
@@ -56,7 +56,7 @@ router.get('/', passport.authenticate('jwt', {
                 });
             }
             else {
-                return res.status(200).json(prediction);
+                return res.status(200).json({success:true, predictions:prediction});
             }
         }).catch(()=>{
             return res.status(400).json({error:"Error in finding predictions for user"});
@@ -141,7 +141,14 @@ router.post('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
     
-    // const { errors, isValid } = validatePredictionCreation(req.body);
+    //const { errors, isValid } = validatePredictionCreation(req.body);
+    console.log("newPredictionID " + req.body.predictionID);
+    console.log("fightID " + req.body.fightID);
+    console.log("userID " + req.body.userID);
+    console.log("winner " + req.body.winner);
+    console.log("winMethod " + req.body.winMethod);
+    console.log("details " + req.body.details);
+
     let newPrediction = new Predictions({
         predictionID: req.body.predictionID,
         fightID: req.body.fightID,
@@ -150,6 +157,8 @@ router.post('/', passport.authenticate('jwt', {
         winMethod: req.body.winMethod,
         details:req.body.details
     });
+
+    console.log("New prediction " + JSON.stringify(newPrediction));
 
     newPrediction.save()
     .then(()=>{

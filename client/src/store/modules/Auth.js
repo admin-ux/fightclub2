@@ -49,6 +49,7 @@ const actions = {
             return res;
         } catch (err) {
             commit('auth_error', err);
+            localStorage.removeItem('token');
         }
     },
     // Register User
@@ -86,7 +87,7 @@ const actions = {
         await localStorage.removeItem('token');
         commit('logout');
         delete axios.defaults.headers.common['Authorization'];
-        router.push('/login');
+        f.push('/login');
         return
     }
 };

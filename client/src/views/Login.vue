@@ -46,11 +46,29 @@ export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      predictionsUserId:"1",
     };
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login", "predictionsByUserId"]),
+    allPredictionsByUserID(){
+      let id = {
+        userID: this.predictionsUserId
+      };
+      this.predictionsByUserId(id).then(res => {
+          if (res.data.success) {
+            //this is where the list of user predictions is. If u want to use the list you need to use it above.
+
+            //might need
+            //this.$state.predictionsByUserId
+          }
+          })
+          .catch(err => {
+          console.log(err);
+        });
+    },
+    
     loginUser() {
       let user = {
         username: this.username,

@@ -31,13 +31,27 @@ const routes = [
   {
     path: "/pickFighter",
     name: "PickFighter",
-    component: () => import("../views/PickFighter.vue")
+    component: () => import("../views/PickFighter.vue"),
+    meta: {
+      requiresAuth: true
+    }
+
   },
   {
     path: "/rank",
     name: "Rank",
-    component: () => import("../views/Rank.vue")
+    component: () => import("../views/Rank.vue"),
+    meta: {
+      requiresAuth: true
+    },
+    
   },
+  
+    {
+      path: "/login2",
+      name: "login2",
+      component: () => import("../views/LoginRedesign.vue"),
+    },
 
   
 ];
@@ -57,14 +71,14 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
-  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+  } /**else if (to.matched.some(record => record.meta.requiresGuest)) {
     if (store.getters.isLoggedIn) {
       // Redirect to the Login Page
       next('/profile');
     } else {
       next();
     }
-  } else {
+  }**/ else {
     next()
   }
 });
