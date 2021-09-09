@@ -1,19 +1,24 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-//import Auth from '../Warehouse/Auth';
+
 import Auth from '../store/modules/Auth';
 import RatingsAndIPs from '../store/modules/RatingsAndInitialPosts';
-import todos from './modules/todos'
+
 import Predictions from '../store/modules/Predictions';
+import CreatedLeaderboard from '../store/modules/CreatedLeaderboard';
+import LeaderboardResults from '../store/modules/LeaderboardResults';
+import Fight from '../store/modules/Fight';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     Auth,
     RatingsAndIPs,
-    todos,
-    Predictions
+    Predictions,
+    CreatedLeaderboard,
+    LeaderboardResults,
+    Fight,
   },
   state: {
   },

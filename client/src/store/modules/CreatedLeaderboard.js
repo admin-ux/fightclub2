@@ -102,6 +102,24 @@ const actions = {
             commit('createdLeaderboard_error', err)
         }
     },
+    // Add one user by leaderboardId and userId to a createdLeaderboard 
+    async addSingleUserTocreatedLeaderboard({ commit }, editedCreatedLeaderboardUserList){
+        try {
+        console.log("In vuex");
+        console.log(JSON.stringify(editedCreatedLeaderboardUserList));
+        
+        const response = await axios.put('http://localhost:5000/api/createdleaderboard/userIDList', editedCreatedLeaderboardUserList);
+        
+        console.log("after call");
+        
+        if(response.data){
+            commit('createdLeaderboard_success');
+            return true;
+        }
+        } catch (err) {
+            commit('createdLeaderboard_error', err)
+        }
+    },
     // Delete 
     async createdLeaderboardDelete({ commit }, deleteCreatedLeaderboard){
         try {
