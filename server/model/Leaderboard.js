@@ -3,10 +3,11 @@ const Schema = mongoose.Schema;
 
 // Create the GLOBAL Leaderboard Schema
 const LeaderboardSchema = new Schema({
-    leaderboardID: {
-        type: String,
-        required: true
-    },
+    // Might not need this anymore
+    // leaderboardID: {
+    //     type: String,
+    //     required: true
+    // },
     userID: {
         type: String,
         required: true

@@ -83,11 +83,18 @@ const users = require('./routes/api/users');
 const friends = require('./routes/api/friends');
 const predictions = require('./routes/api/predictions');
 const leaderboardresults = require('./routes/api/leaderboardresults');
+
+const fight = require('./routes/api/fight');
+const createdleaderboard = require('./routes/api/createdleaderboard');
+
 app.use('/api/users',users);
 // app.use('/api/session', session);
 app.use('/api/friends', friends);
 app.use('/api/predictions', predictions);
 app.use('/api/leaderboardresults', leaderboardresults);
+
+app.use('/api/fight', fight);
+app.use('/api/createdleaderboard', createdleaderboard);
 //** 
 
 //**Will most likely have to change this so that incorrect request get errors

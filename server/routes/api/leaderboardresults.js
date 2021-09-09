@@ -27,20 +27,19 @@ const Leaderboard = require('../../model/Leaderboard');
 
 
 // Get 
-// 1) a specific leaderboard result / user
+// 1) a result from a specific user
 // 2) specific number of results 
-// 3) Get all leaderboard results for a specific leaderboard
+// 3) Get all leaderboard results for the GLOBAL leaderboard
 // ! Should probably be querying for users and not fights
 router.get('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
         const numberOfResults=Number(req.body.numberOfResults);
-        // 1) a specific leaderboard result / user
-        if (req.body.leaderboardID && req.body.userID){
+        // 1) a result from a specific user
+        if ( req.body.userID){
             Leaderboard.findOne({
                 // Query
                 userID: req.body.userID,
-                leaderboardID: req.body.leaderboardID
     
             }).then(leaderboardresult =>{
                 if (!leaderboardresult){
@@ -57,12 +56,8 @@ router.get('/', passport.authenticate('jwt', {
             })
         }
         // 2) specific number of results 
-        else if  (req.body.leaderboardID && req.body.numberOfResults){
-            Leaderboard.find({
-                // Query
-                leaderboardID: req.body.leaderboardID,
-    
-            }).limit(numberOfResults).then(leaderboardresult =>{
+        else if  (req.body.numberOfResults){
+            Leaderboard.find().limit(numberOfResults).then(leaderboardresult =>{
                 if (!leaderboardresult){
                     return res.status(404).json({
                         msg: "Any leaderboard result for this user could not be found",
@@ -76,14 +71,9 @@ router.get('/', passport.authenticate('jwt', {
                 return res.status(400).json({error:"Error in finding leaderboard result for specific number of users"});
             })
         }
-        // 3) Get all leaderboard results for a specific leaderboard
+        // 3) Get all leaderboard results for the GLOBAL leaderboard
         else{
-            Leaderboard.find({
-                // Query
-                leaderboardID: req.body.leaderboardID
-                
-    
-            }).then(leaderboardresult =>{
+            Leaderboard.find().then(leaderboardresult =>{
                 if (!leaderboardresult){
                     return res.status(404).json({
                         msg: "Leaderboard result could not be found",
@@ -198,10 +188,8 @@ router.post('/', passport.authenticate('jwt', {
                         // ! Make sure this number increased & that they are both int's
                         // leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
                         Leaderboard.updateOne(
-                            {"leaderboardID" : leaderboardPosition.leaderboardID,
-                            "userID":leaderboardPosition.userID},
+                            {"userID":leaderboardPosition.userID},
                             {$set: {
-                                leaderboardID: leaderboardPosition.leaderboardID,
                                 totalPredictions: leaderboardPosition.totalPredictions,
                                 userID: leaderboardPosition.userID,
                                 totalWins: leaderboardPosition.totalWins,
@@ -338,10 +326,8 @@ router.delete('/', passport.authenticate('jwt', {
                         leaderboardPosition.averagePointsPerWin=leaderboardPosition.score/leaderboardPosition.totalWins
 
                         Leaderboard.updateOne(
-                            {"leaderboardID" : leaderboardPosition.leaderboardID,
-                            "userID":leaderboardPosition.userID},
+                            {"userID":leaderboardPosition.userID},
                             {$set: {
-                                leaderboardID: leaderboardPosition.leaderboardID,
                                 totalPredictions: leaderboardPosition.totalPredictions,
                                 userID: leaderboardPosition.userID,
                                 totalWins: leaderboardPosition.totalWins,
@@ -491,10 +477,8 @@ router.put('/', passport.authenticate('jwt', {
                         
 
                         Leaderboard.updateOne(
-                            {"leaderboardID" : leaderboardPosition.leaderboardID,
-                            "userID":leaderboardPosition.userID},
+                            {"userID":leaderboardPosition.userID},
                             {$set: {
-                                leaderboardID: leaderboardPosition.leaderboardID,
                                 totalPredictions: leaderboardPosition.totalPredictions,
                                 userID: leaderboardPosition.userID,
                                 totalWins: leaderboardPosition.totalWins,

@@ -69,10 +69,8 @@ router.post('/register', (req, res) => {
                    
                     // Add new user to leaderboard
                     let newLeaderboard = new Leaderboard({
-                        // ! Might just use the object id as the id for all the actual models id
-                        leaderboardID: "0",
                         totalPredictions: 0,
-                        userID: user._id,
+                        userID: user.username,
                         totalWins: 0,
                         averagePointsPerWin:0,
                         winPercentage:0,
@@ -98,11 +96,6 @@ router.post('/register', (req, res) => {
         });
         
         
-
-        // leaderboardID: {
-        //     type: String,
-        //     required: true
-        // },
         // userID: {
         //     type: String,
         //     required: true
