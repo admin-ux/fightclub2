@@ -41,7 +41,12 @@ const actions = {
         console.log("In vuex");
         console.log(JSON.stringify(Ids));
         
-        const response = await axios.get('http://localhost:5000/api/predictions', Ids );
+        const response = await axios.get('http://localhost:5000/api/predictions', {
+            params:
+                Ids
+            
+        } 
+        )
         
         console.log("after call");
         
@@ -61,7 +66,12 @@ const actions = {
         console.log("In vuex");
         console.log(JSON.stringify(userID));
         
-        const response = await axios.get('http://localhost:5000/api/predictions', userID );
+        const response = await axios.get('http://localhost:5000/api/predictions', {
+            params:
+                userID
+            
+        } 
+        )
         
         console.log("after call");
         
@@ -81,7 +91,12 @@ const actions = {
         console.log("In vuex");
         console.log(JSON.stringify(fightID));
        
-        const response = await axios.get('http://localhost:5000/api/predictions', fightID );
+        const response = await axios.get('http://localhost:5000/api/predictions', {
+            params:
+                fightID
+            
+        } 
+        )
         
         console.log("after call");
         
@@ -117,7 +132,7 @@ const actions = {
         console.log("In vuex");
         console.log(JSON.stringify(editedPredictions));
         
-        const response = await axios.put('http://localhost:5000/api/leaderboardresults', editedPredictions);
+        const response = await axios.put('http://localhost:5000/api/predictions', editedPredictions);
         
         console.log("after call");
         
@@ -130,12 +145,12 @@ const actions = {
         }
     },
     // Delete 
-    async predictionDelete({ commit }, deletePredictions){
+    async predictionDelete({ commit }, deletePrediction){
         try {
         console.log("In vuex");
-        console.log(JSON.stringify(deletePredictions));
+        console.log(JSON.stringify(deletePrediction));
         
-        const response = await axios.delete('http://localhost:5000/api/leaderboardresults', deletePredictions);
+        const response = await axios.delete('http://localhost:5000/api/predictions', deletePrediction);
         
         console.log("after call");
         

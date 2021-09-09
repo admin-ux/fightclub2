@@ -23,8 +23,6 @@ router.get('/info', passport.authenticate('jwt', {
     }), (req, res) => {
 
     // One specific fight prediction from a user for a user
-    
-
 
     CreatedLeaderboard.findOne({
         // Query
