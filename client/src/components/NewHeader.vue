@@ -8,9 +8,10 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item to="/pickFighter" v-if="isLoggedIn">Pick'Em</b-nav-item>
-          <b-nav-item to="/about" v-if="isLoggedIn">About</b-nav-item>
+          <b-nav-item to="/Edit" v-if="isLoggedIn">Pick'Em Edit</b-nav-item>
           <b-nav-item to="/profile" v-if="isLoggedIn">Profile</b-nav-item>
           <b-nav-item to="/rank" v-if="isLoggedIn">Rank</b-nav-item>
+          <b-nav-item to="/rules" v-if="isLoggedIn" >Rules/FAQ</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->

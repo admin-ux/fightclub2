@@ -6,14 +6,14 @@ const state = {
 
     leaderboardResultsUserId:[],
     leaderboardResultsLimit: [],
-    leaderboardResultsId:{},
+    leaderboardResults:{},
 };
 
 const getters = {
     
     queriedLeaderboardResultByUserIdAndId: (state) => state.leaderboardResultsUserId,
     queriedLeaderboardResultByIdAndLimit: (state) => state.leaderboardResultsLimit,
-    queriedLeaderboardResultById: (state) => state.leaderboardResultsId,
+    queriedLeaderboardResult: (state) => state.leaderboardResults,
 
 };
 
@@ -23,17 +23,16 @@ const actions = {
         try {
             
         console.log("In vuex");
-        console.log(JSON.stringify(UserIdObj));
         
         const response = await axios.get('http://localhost:5000/api/leaderboardresults', {
                 params:
                     UserIdObj
-                
             } 
             )
         
         console.log("after call");
-        
+        console.log(JSON.stringify(UserIdObj));
+
         if(response.data){
             commit('setLeaderboardResultByUserIdAndId', response.data);
             return true;
@@ -53,7 +52,6 @@ const actions = {
         const response = await axios.get('http://localhost:5000/api/leaderboardresults', {
             params:
                 LimitObj
-            
         } 
         )
         
@@ -69,23 +67,19 @@ const actions = {
         }
     },
     // All predictions for one Leaderboard
-    async leaderboardResultById ({ commit }, Id){
+    async leaderboardResult ({ commit } ){
         try {
             
         console.log("In vuex");
-        console.log(JSON.stringify(Id));
+        
        
-        const response = await axios.get('http://localhost:5000/api/leaderboardresults', {
-            params:
-                    Id
-            
-        } 
-        )
+        const response = await axios.get('http://localhost:5000/api/leaderboardresults')
         
         console.log("after call");
-        
+        console.log(JSON.stringify(response.data));
+
         if(response.data){
-            commit('setLeaderboardResultById', response.data);
+            commit('setLeaderboardResult', response.data);
             return true;
         }
         } catch (err) {
@@ -154,8 +148,8 @@ const mutations = {
     setLeaderboardResultByIdAndLimit(state, leaderboardResultsLimit) {
         state.leaderboardResultsLimit = leaderboardResultsLimit;
     },
-    setLeaderboardResultById(state, leaderboardResultsId){
-        state.leaderboardResultsId = leaderboardResultsId
+    setLeaderboardResult(state, leaderboardResults){
+        state.leaderboardResults = leaderboardResults
     },
     // user_leaderboard(state, Prediction) {
     //     state.Prediction = Prediction

@@ -16,7 +16,6 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   
   computed: mapGetters(["user"]), 
-
   methods: {
     ...mapActions(["getProfile"]),
   },
@@ -25,6 +24,5 @@ export default {
   }
 };
 </script>
-
 <style>
 </style>

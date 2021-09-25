@@ -47,7 +47,6 @@ router.get('/', passport.authenticate('jwt', {
         Predictions.find({
             // Query
             userID: req.body.userID,
-
         }).then(prediction =>{
             if (!prediction){
                 return res.status(404).json({
@@ -189,7 +188,7 @@ router.put('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
     
-    
+        console.log("This should be winmethod " + req.body.winMethod)
     // ! You must give all parameters or they will be set to null
     Predictions.updateOne(
         {"predictionID" : req.body.predictionID},
@@ -200,10 +199,14 @@ router.put('/', passport.authenticate('jwt', {
             winner: req.body.winner,
             winMethod: req.body.winMethod,
             details:req.body.details
+            
     }
-
+    
     }).then(()=>{
-        return res.status(200).json({status:"ok"})
+        return res.status(200).json({
+            status: "ok",
+            success: true
+        })
     }).catch(()=>{
         return res.status(400).json({error:"Error editing a prediction"});
     });

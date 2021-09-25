@@ -1,7 +1,6 @@
 <template>
   <div>
     <h2>Login</h2>
-    <div class="row">
       <div class="card mx-auto">
         <div class="card-header text-white bg-primary">
           <h4>Login</h4>
@@ -36,7 +35,6 @@
           </form>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -61,7 +59,7 @@ export default {
             //this is where the list of user predictions is. If u want to use the list you need to use it above.
 
             //might need
-            //this.$state.predictionsByUserId
+            this.$state.predictionsByUserId;
           }
           })
           .catch(err => {
@@ -77,6 +75,9 @@ export default {
       this.login(user)
         .then(res => {
           if (res.data.success) {
+            //const userObj = JSON.stringify(user);
+            localStorage.setItem("userName", user.username)
+            console.log(" this is newest"+ user.username);
             this.$router.push("/profile");
           }
         })

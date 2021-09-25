@@ -9,10 +9,8 @@ const state = {
 };
 
 const getters = {
-    
     queriedFightByFightID: (state) => state.fightObj,
     queriedFightList: (state) => state.fightObjList,
-
 };
 
 const actions = {

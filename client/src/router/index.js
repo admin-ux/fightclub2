@@ -9,7 +9,10 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
+    meta: {
+      requiresAuth: false
+  },
   },
   {
     path: "/login",
@@ -38,20 +41,37 @@ const routes = [
 
   },
   {
-    path: "/rank",
-    name: "Rank",
-    component: () => import("../views/Rank.vue"),
+    path: "/edit",
+    name: "Edit",
+    component: () => import("../views/Edit.vue"),
     meta: {
       requiresAuth: true
     },
     
   },
+  {
+    path: "/rank",
+    name: "Rank",
+    component: () => import("../views/Rank.vue"),
+    meta: {
+      requiresAuth: true
+  },
+    
+  },
   
-    {
+  {
       path: "/login2",
       name: "login2",
       component: () => import("../views/LoginRedesign.vue"),
-    },
+  },
+
+  {
+      path: "/rules",
+      name: "Rules/FAQ",
+      component: () => import("../views/Rules.vue"),
+      
+  },
+    
 
   
 ];

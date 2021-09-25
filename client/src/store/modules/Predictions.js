@@ -17,8 +17,6 @@ const getters = {
     queriedPredictionByFightId: (state) => state.predictionFightId,
     queriedPredictionByUserId: (state) => state.predictionUserId,
 
-
-
     // //get a specific fight for a specific user (dont work)
     // getPredictionById: (state) => (userID, fightID) => {
     //     return state.Predictions.find(Prediction => Prediction.id === userID && fightID)
@@ -44,7 +42,6 @@ const actions = {
         const response = await axios.get('http://localhost:5000/api/predictions', {
             params:
                 Ids
-            
         } 
         )
         
@@ -65,15 +62,14 @@ const actions = {
             
         console.log("In vuex");
         console.log(JSON.stringify(userID));
-        
         const response = await axios.get('http://localhost:5000/api/predictions', {
             params:
                 userID
-            
         } 
         )
-        
+        console.log(JSON.stringify(userID));
         console.log("after call");
+
         
         if(response.data){
             commit('setPredictionUserId', response.data);
@@ -88,19 +84,19 @@ const actions = {
     async predictionsByFightId ({ commit }, fightID){
         try {
             
-        console.log("In vuex");
+        console.log("In vuex 2");
         console.log(JSON.stringify(fightID));
        
         const response = await axios.get('http://localhost:5000/api/predictions', {
             params:
                 fightID
-            
         } 
         )
         
         console.log("after call");
         
         if(response.data){
+            console.log("fightID");
             commit('setPredictionFightId', response.data);
             return true;
             // commit('prediction_success');
@@ -114,17 +110,21 @@ const actions = {
         //const response = await axios.post('http://localhost:5000/api/predictions',);
         console.log("In vuex");
         console.log(JSON.stringify(newPrediction));
-        
+        console.log("hello there");
         const response = await axios.post('http://localhost:5000/api/predictions', newPrediction);
         
         console.log("after call");
-        
+        console.log("this might have worked")
         if(response.data){
+            console.log("this has worked")
             commit('prediction_success');
             return true;
         }
+        else{            console.log("this blew a tire else")
+    }
         } catch (err) {
             commit('prediction_error', err)
+            console.log("this blew a tire")
         }
     },
     async predictionEdit({ commit }, editedPredictions){
@@ -135,7 +135,8 @@ const actions = {
         const response = await axios.put('http://localhost:5000/api/predictions', editedPredictions);
         
         console.log("after call");
-        
+        console.log(JSON.stringify(editedPredictions));
+
         if(response.data){
             commit('prediction_success');
             return true;

@@ -1,17 +1,20 @@
 <template>
-    <div>
+    <div style="overflow-x:auto;">
         <h3>Rank</h3>
-        <div>
-          <b-pagination
-      v-model="currentPage"
-      :total-rows="rows"
-      :per-page="perPage"
-      aria-controls="my-table"
-    ></b-pagination>
-            <b-table striped hover :items="allTodos" :per-page="perPage"
-      :current-page="currentPage"></b-table>
-    </div>
-
+        
+    <table  id="customers">
+  <tr>
+    <th>Username</th>
+    <th>Points</th>
+    <th>Win Percentage</th>
+  </tr>
+  <tr v-for="result in queriedLeaderboardResult"
+        :key="result.userID">
+    <td>{{ result.userID }}</td>
+    <td>{{ result.score }}</td>
+    <td>{{ result.winPercentage }}%</td>
+  </tr>
+</table>
     </div>
 </template>
 
@@ -22,44 +25,48 @@ export default {
       return {
         perPage: 10,
         currentPage: 1,
+       
       }
     },
-    name:"Todos",
+    computed: {
+       ...mapGetters(['queriedLeaderboardResult']),
+},
     methods:{
-        ...mapActions(['fetchTodos']) 
+        ...mapActions(['leaderboardResult']) 
     },
     created(){
-        this.fetchTodos();
+        this.leaderboardResult();
     },
-     computed: {
-       ...mapGetters(['allTodos']),
-      rows() {
-        return this.allTodos.length
-      }
-}
-}
+
+};
 </script>
 
 <style>
- .todos {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
-}
-.todo {
-  border: 1px solid #ccc;
-  background: #41b883;
-  padding: 1rem;
-  border-radius: 5px;
-  text-align: center;
-  position: relative;
-  cursor: pointer;
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+
 }
 
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 50%;
+#customers td, #customers th {
+  border: 20px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #28a745;
+  color: white;
 }
 
 </style>
