@@ -71,6 +71,12 @@ const routes = [
       component: () => import("../views/Rules.vue"),
       
   },
+  {
+    path: "/Intro",
+    name: "Intro",
+    component: () => import("../views/LandingPage.vue"),
+    
+},
     
 
   

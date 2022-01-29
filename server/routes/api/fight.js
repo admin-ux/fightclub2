@@ -83,7 +83,6 @@ router.post('/', passport.authenticate('jwt', {
         fighter1: req.body.fighter1,
         fighter2: req.body.fighter2,
         name: req.body.name,
-      
     });
 
     console.log("New fight " + JSON.stringify(newFight));

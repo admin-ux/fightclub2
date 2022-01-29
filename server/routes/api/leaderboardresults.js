@@ -34,12 +34,12 @@ const Leaderboard = require('../../model/Leaderboard');
 router.get('/', passport.authenticate('jwt', {
     session: false
     }), (req, res) => {
-        const numberOfResults=Number(req.body.numberOfResults);
+        const numberOfResults=Number(req.query.numberOfResults);
         // 1) a result from a specific user
-        if ( req.body.userID){
+        if ( req.query.userID){
             Leaderboard.findOne({
                 // Query
-                userID: req.body.userID,
+                userID: req.query.userID,
     
             }).then(leaderboardresult =>{
                 if (!leaderboardresult){
@@ -56,7 +56,7 @@ router.get('/', passport.authenticate('jwt', {
             })
         }
         // 2) specific number of results 
-        else if  (req.body.numberOfResults){
+        else if  (req.query.numberOfResults){
             Leaderboard.find().limit(numberOfResults).then(leaderboardresult =>{
                 if (!leaderboardresult){
                     return res.status(404).json({

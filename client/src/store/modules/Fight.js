@@ -24,12 +24,12 @@ const actions = {
         const response = await axios.get('http://localhost:5000/api/fight', {
             params:
             fightID
-            
         } 
         )
         
         console.log("after call");
-        
+        console.log(JSON.stringify(response.data));
+
         if(response.data){
             commit('setSpecificFight', response.data);
             return true;
@@ -42,13 +42,15 @@ const actions = {
     //show all predictions done by user.
     async Allfights ({ commit }){
         try {
-            
+
         console.log("In vuex");
         // console.log(JSON.stringify(userID));
         
         const response = await axios.get('http://localhost:5000/api/fight')
         
         console.log("after call");
+        console.log(JSON.stringify(response.data));
+
         
         if(response.data){
             commit('setFightList', response.data);

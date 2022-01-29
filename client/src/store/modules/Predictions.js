@@ -71,8 +71,12 @@ const actions = {
         console.log("after call");
 
         
-        if(response.data){
-            commit('setPredictionUserId', response.data);
+        if(response.data.success){
+            commit('setPredictionUserId', response.data.predictions);
+            console.log("this is the strigfy");
+            console.log(JSON.stringify(response.data));
+            console.log("this is list if pridictions");
+            console.log(JSON.stringify(state.predictionUserId));
             return true;
             // commit('prediction_success');
         }
@@ -120,7 +124,7 @@ const actions = {
             commit('prediction_success');
             return true;
         }
-        else{            console.log("this blew a tire else")
+        else{     console.log("this blew a tire else")
     }
         } catch (err) {
             commit('prediction_error', err)

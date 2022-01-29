@@ -23,16 +23,16 @@
                 size="sm"
                 class="mt-3"
               ></b-form-select>
-              //
-              <div
+             
+              <input type="submit" class="btn btn-primary mt-2" value="Create" />
+            </form>       
+             <div
         v-for="result in queriedPredictionByUserId"
         :key="result.userID">
-        {{ result.fightID }}
+        {{ result.userID }}
         hello  
         </div>
-        hello
-              <input type="submit" class="btn btn-primary mt-2" value="Create" />
-            </form>      
+        
           </b-card-text> 
         </b-card>
     </b-card-group>
@@ -58,13 +58,6 @@ export default {
       details: null,
       winner: null,
       userID: null,
-      userTest:{},
-      fighter:[
-        { value: null, text: "Who wins?" },
-        { value: "1", text: "Anothoy Joshua" },
-        { value: "2", text: "Tyson Fury" },
-        { value: "3", text: "Draw" }
-        ],
       choices: [ 
         { value: null, text: "Method?" },
         { value: "1", text: "KO/TKO" },
@@ -76,18 +69,10 @@ export default {
         { value: "2", text: "5-8" },
         { value: "3", text: "9-12" }
         ]
-        
     };
   },
   computed:{...mapGetters([
      "user","queriedPredictionByUserId","queriedPredictionByFightId","queriedPredictionByIds"]),
-  // If breaks try this
-  // user(){
-  //   console.log("we are here")
-  //   console.log(this.$store.getters.user.username);
-  //   //this.userTest = this.$store.getters.user;
-  //   return this.$store.getters.user;
-  // }
   },
   methods: {
     ...mapActions(["predictionEdit", "predictionsByUserId", "predictionsByFightId"]),
@@ -139,8 +124,8 @@ export default {
       console.log(getByFightId);
       this.predictionsByUserId(getByUserId)
         .then(res => {
-          if (res.data.success) {
-            console.log("hello succes");
+          if (res) {
+            console.log("hello succes userID");
           }
         })
         .catch(err => {
@@ -148,8 +133,8 @@ export default {
         });
         this.predictionsByFightId(getByFightId)
   .then(res => {
-          if (res.data.success) {
-            console.log("hello succes");
+          if (res) {
+            console.log("hello succes fightID");
           }
         })
         .catch(err => {

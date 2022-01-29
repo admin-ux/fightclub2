@@ -6,6 +6,7 @@
     <Errors v-if="error" :msg="error"/>
     <router-view/>
     <bottom-header></bottom-header>
+    <footer></footer>
   </div>
 </template>
 <script>
@@ -13,11 +14,12 @@ import { mapGetters } from "vuex";
 import Header from "@/components/NewHeader.vue";
 import Footer from "@/components/Footer.vue";
 import Errors from "@/components/Errors.vue"
+
 export default {
   components: {
     "new-header": Header,
     "bottom-header": Footer,
-    Errors
+    Errors,
   },
   computed: {
     ...mapGetters(["error"])

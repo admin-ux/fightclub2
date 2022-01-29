@@ -23,11 +23,11 @@ router.get('/', passport.authenticate('jwt', {
     // ! Need to know if params is empty - no fightID
 
     // One specific fight prediction from a user for a user
-    if (req.body.fightID && req.body.userID){
+    if (req.query.fightID && req.query.userID){
         Predictions.findOne({
             // Query
-            userID: req.body.userID,
-            fightID: req.body.fightID
+            userID: req.query.userID,
+            fightID: req.query.fightID
         }).then(prediction =>{
             if (!prediction){
                 return res.status(404).json({
@@ -43,10 +43,10 @@ router.get('/', passport.authenticate('jwt', {
         })
     }
     // All fight for a user
-    else if  (req.body.userID){
+    else if  (req.query.userID){
         Predictions.find({
             // Query
-            userID: req.body.userID,
+            userID: req.query.userID,
         }).then(prediction =>{
             if (!prediction){
                 return res.status(404).json({
@@ -65,7 +65,7 @@ router.get('/', passport.authenticate('jwt', {
     else{
         Predictions.find({
             // Query
-            fightID: req.body.fightID
+            fightID: req.query.fightID
 
         }).then(prediction =>{
             if (!prediction){
