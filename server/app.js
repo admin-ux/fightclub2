@@ -1,12 +1,11 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-const cors = require('cors');
-const passport = require('passport');
-
+const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
+const cors = require("cors");
+const passport = require("passport");
 
 // Gives us access to variables set in the .env file via `process.env.VARIABLE_NAME` syntax
-require('dotenv').config();
+require("dotenv").config();
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -19,28 +18,29 @@ const app = express();
 // Middleware
 // From Data Middleware
 //support parsing of application/x-www-form-urlencoded post data
-app.use(bodyParser.urlencoded({
-    extended: false 
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  })
+);
 
 // Json Body Middleware
 // support parsing of application/json type post data
 app.use(bodyParser.json());
-//BodyParser: Handles HTTP POST request in Express.js version 4 and above, 
+//BodyParser: Handles HTTP POST request in Express.js version 4 and above,
 //you need to install middleware module called body-parser.
-//body-parser extracts the entire body portion of an incoming 
+//body-parser extracts the entire body portion of an incoming
 //request stream and exposes it on req.body
-
 
 // Cors Middleware
 app.use(cors());
-//Cors: Cross-origin resource sharing (CORS) allows AJAX requests to skip 
+//Cors: Cross-origin resource sharing (CORS) allows AJAX requests to skip
 //the Same-origin policy and access resources from remote hosts.
 
 // Setting up the static directory
 //app.use(express.static(path.join(__dirname, 'public')));//*May have to recreate this collection of files
-//Static Directory: Static files are files that clients download as they are 
-//from the server. Create a new directory, public. 
+//Static Directory: Static files are files that clients download as they are
+//from the server. Create a new directory, public.
 //Express, by default does not allow you to serve static files. You need
 // to enable it using the following built-in middleware.
 
@@ -49,16 +49,14 @@ app.use(cors());
  */
 
 //Used to point to config database file
-require('./config/database');
-
+require("./config/database");
 
 /**
  * -------------- Model ----------------
  */
 
 // Must first load the models
-require('./model/User');
-
+require("./model/User");
 
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
@@ -67,35 +65,32 @@ require('./model/User');
 //Use the passport Middleware
 app.use(passport.initialize());
 //Bring in the Passport Stradegy
-require('./config/passport')(passport);
-
-
-
+require("./config/passport")(passport);
 
 /**
  * -------------- ROUTES ----------------
  */
 // })
 // Bring in the Users route
-const users = require('./routes/api/users');
+const users = require("./routes/api/users");
 //**Created
 // const session = require('./routes/api/session');
-const friends = require('./routes/api/friends');
-const predictions = require('./routes/api/predictions');
-const leaderboardresults = require('./routes/api/leaderboardresults');
+const friends = require("./routes/api/friends");
+const predictions = require("./routes/api/predictions");
+const leaderboardresults = require("./routes/api/leaderboardresults");
 
-const fight = require('./routes/api/fight');
-const createdleaderboard = require('./routes/api/createdleaderboard');
+const fight = require("./routes/api/fight");
+const createdleaderboard = require("./routes/api/createdleaderboard");
 
-app.use('/api/users',users);
+app.use("/api/users", users);
 // app.use('/api/session', session);
-app.use('/api/friends', friends);
-app.use('/api/predictions', predictions);
-app.use('/api/leaderboardresults', leaderboardresults);
+app.use("/api/friends", friends);
+app.use("/api/predictions", predictions);
+app.use("/api/leaderboardresults", leaderboardresults);
 
-app.use('/api/fight', fight);
-app.use('/api/createdleaderboard', createdleaderboard);
-//** 
+app.use("/api/fight", fight);
+app.use("/api/createdleaderboard", createdleaderboard);
+//**
 
 //**Will most likely have to change this so that incorrect request get errors
 //Generally * is for finding all other requests beside the ones you have defined
@@ -106,14 +101,15 @@ app.use('/api/createdleaderboard', createdleaderboard);
 //     res.sendFile(path.join(__dirname, 'public/index.html'));
 // })
 
-
 /**
  * -------------- SERVER ----------------
  */
-//Probably should hide the port in a "".env" file using 
+//Probably should hide the port in a "".env" file using
 //"dotenv" thats what the .env.Port is for
 const PORT = process.env.PORT || 5000;
 
+// const port = 80;
+
 app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
-})
+  console.log(`Server started on port ${port}`);
+});

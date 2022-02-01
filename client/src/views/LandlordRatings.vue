@@ -1,6 +1,6 @@
 <template>
   <div class="landlordratings">
-    
+<!--     
     
     <b-container class="bv-example-row">
         <b-row class="text-center">
@@ -9,7 +9,6 @@
             <b-col cols="8" >2 of 3 (wider)
 
                 
-                <!-- Add boarder and off white colour also add results in cards multiplied by number of results scrolling down -->
                 <div>
                     <b-card-group deck>
                         <b-card
@@ -18,9 +17,6 @@
                         title="Landlord: Actual Name of Landlord"
                         >
                         <b-card-text>Address: Actaul Address</b-card-text>
-                        <!-- <b-button href="#" variant="primary">Go somewhere</b-button>
-                        Probably wil make whole card clickable -->
-                        <!-- **May Rearrange this to have Rating on Top, Name as title and Body as Address  -->
                         </b-card>   
                     </b-card-group>
                 </div>
@@ -47,7 +43,7 @@
 
      
   
-  </div>
+  </div> -->
 
   
   
